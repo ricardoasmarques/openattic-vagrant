@@ -52,7 +52,7 @@ raise Vagrant::Errors::VagrantError.new,
 Vagrant.configure("2") do |config|
   config.ssh.insert_key = false
 
-  config.vm.box = "opensuse/openSUSE-42.2-x86_64"
+  config.vm.box = "suse/SLE15-x86_64"
 
   config.vm.provider "libvirt" do |lv|
     if settings.has_key?('libvirt_host') then
@@ -119,17 +119,26 @@ Vagrant.configure("2") do |config|
       cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
       hostname node1
 
-      zypper ar http://download.opensuse.org/repositories/filesystems:/ceph:/luminous/openSUSE_Leap_42.3/filesystems:ceph:luminous.repo
-      zypper ar http://download.opensuse.org/repositories/devel:languages:python/openSUSE_Leap_42.3/devel:languages:python.repo
-      zypper ar http://download.opensuse.org/repositories/home:/swiftgist/openSUSE_Leap_42.1/home:swiftgist.repo
-      zypper ar http://download.opensuse.org/repositories/home:/tserong/openSUSE_Factory/home:tserong.repo
-      zypper ar http://download.opensuse.org/repositories/home:/jfajerski/openSUSE_Leap_42.2/home:jfajerski.repo
-      zypper ar http://download.opensuse.org/repositories/filesystems:/ceph/openSUSE_Leap_42.3/filesystems:ceph.repo
+      zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Basesystem-POOL-x86_64-Media1/ Basesystem
+      zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Server-Applications-POOL-x86_64-Media1/ Server
+      zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Desktop-Applications-POOL-x86_64-Media1/ Desktop
+      zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Development-Tools-POOL-x86_64-Media1/ Development
+      zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/Update:/Products:/SES6/images/repo/SUSE-Enterprise-Storage-6-POOL-x86_64-Media1/ SES6
+
+      zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/Update:/Products:/SES6/standard/SUSE:SLE-15:Update:Products:SES6.repo
+
+      zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA/standard/SUSE:SLE-15:GA.repo
+
+      zypper ar http://download.suse.de/ibs/home:/rjdias:/branches:/Devel:/Storage:/6.0:/Test/SLE15/home:rjdias:branches:Devel:Storage:6.0:Test.repo
+      sudo zypper mr -p 1 home_rjdias_branches_Devel_Storage_6.0_Test
+
+      zypper ar http://download.suse.de/ibs/SUSE:/Factory:/Head/standard/SUSE:Factory:Head.repo
+
       zypper --gpg-auto-import-keys ref
 
       SuSEfirewall2 off
 
-      zypper -n install ntp
+      # zypper -n install ntp
       zypper -n install salt-minion
       systemctl enable salt-minion
       systemctl start salt-minion
@@ -186,17 +195,26 @@ Vagrant.configure("2") do |config|
         ssh-keyscan -H node1 >> ~/.ssh/known_hosts
         ssh-keyscan -H node3 >> ~/.ssh/known_hosts
 
-        zypper ar http://download.opensuse.org/repositories/filesystems:/ceph:/luminous/openSUSE_Leap_42.3/filesystems:ceph:luminous.repo
-        zypper ar http://download.opensuse.org/repositories/devel:languages:python/openSUSE_Leap_42.3/devel:languages:python.repo
-        zypper ar http://download.opensuse.org/repositories/home:/swiftgist/openSUSE_Leap_42.1/home:swiftgist.repo
-        zypper ar http://download.opensuse.org/repositories/home:/tserong/openSUSE_Factory/home:tserong.repo
-        zypper ar http://download.opensuse.org/repositories/home:/jfajerski/openSUSE_Leap_42.2/home:jfajerski.repo
-        zypper ar http://download.opensuse.org/repositories/filesystems:/ceph/openSUSE_Leap_42.3/filesystems:ceph.repo
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Basesystem-POOL-x86_64-Media1/ Basesystem
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Server-Applications-POOL-x86_64-Media1/ Server
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Desktop-Applications-POOL-x86_64-Media1/ Desktop
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Development-Tools-POOL-x86_64-Media1/ Development
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/Update:/Products:/SES6/images/repo/SUSE-Enterprise-Storage-6-POOL-x86_64-Media1/ SES6
+
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/Update:/Products:/SES6/standard/SUSE:SLE-15:Update:Products:SES6.repo
+
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA/standard/SUSE:SLE-15:GA.repo
+
+        zypper ar http://download.suse.de/ibs/home:/rjdias:/branches:/Devel:/Storage:/6.0:/Test/SLE15/home:rjdias:branches:Devel:Storage:6.0:Test.repo
+        sudo zypper mr -p 1 home_rjdias_branches_Devel_Storage_6.0_Test
+
+        zypper ar http://download.suse.de/ibs/SUSE:/Factory:/Head/standard/SUSE:Factory:Head.repo
+
         zypper --gpg-auto-import-keys ref
 
         SuSEfirewall2 off
 
-        zypper -n install ntp
+        # zypper -n install ntp
         zypper -n install salt-minion
         systemctl enable salt-minion
         systemctl start salt-minion
@@ -253,18 +271,27 @@ Vagrant.configure("2") do |config|
         ssh-keyscan -H node1 >> ~/.ssh/known_hosts
         ssh-keyscan -H node2 >> ~/.ssh/known_hosts
 
-        zypper ar http://download.opensuse.org/repositories/filesystems:/ceph:/luminous/openSUSE_Leap_42.3/filesystems:ceph:luminous.repo
-        zypper ar http://download.opensuse.org/repositories/devel:languages:python/openSUSE_Leap_42.3/devel:languages:python.repo
-        zypper ar http://download.opensuse.org/repositories/home:/swiftgist/openSUSE_Leap_42.1/home:swiftgist.repo
-        zypper ar http://download.opensuse.org/repositories/home:/tserong/openSUSE_Factory/home:tserong.repo
-        zypper ar http://download.opensuse.org/repositories/home:/jfajerski/openSUSE_Leap_42.2/home:jfajerski.repo
-        zypper ar http://download.opensuse.org/repositories/filesystems:/ceph/openSUSE_Leap_42.3/filesystems:ceph.repo
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Basesystem-POOL-x86_64-Media1/ Basesystem
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Server-Applications-POOL-x86_64-Media1/ Server
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Desktop-Applications-POOL-x86_64-Media1/ Desktop
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Development-Tools-POOL-x86_64-Media1/ Development
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/Update:/Products:/SES6/images/repo/SUSE-Enterprise-Storage-6-POOL-x86_64-Media1/ SES6
+
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/Update:/Products:/SES6/standard/SUSE:SLE-15:Update:Products:SES6.repo
+
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA/standard/SUSE:SLE-15:GA.repo
+
+        zypper ar http://download.suse.de/ibs/home:/rjdias:/branches:/Devel:/Storage:/6.0:/Test/SLE15/home:rjdias:branches:Devel:Storage:6.0:Test.repo
+        sudo zypper mr -p 1 home_rjdias_branches_Devel_Storage_6.0_Test
+
+        zypper ar http://download.suse.de/ibs/SUSE:/Factory:/Head/standard/SUSE:Factory:Head.repo
+
         zypper --gpg-auto-import-keys ref
         hostname node3
 
         SuSEfirewall2 off
 
-        zypper -n install ntp
+        # zypper -n install ntp
         zypper -n install salt-minion
         systemctl enable salt-minion
         systemctl start salt-minion
@@ -303,7 +330,21 @@ Vagrant.configure("2") do |config|
         ssh-keyscan -H node1 >> ~/.ssh/known_hosts
         ssh-keyscan -H node2 >> ~/.ssh/known_hosts
 
-        zypper ar http://download.suse.de/ibs/SUSE:/SLE-12-SP3:/Update:/Products:/SES5/images/repo/SUSE-Enterprise-Storage-5-POOL-x86_64-Media1/ SES5_Media1
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Basesystem-POOL-x86_64-Media1/ Basesystem
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Server-Applications-POOL-x86_64-Media1/ Server
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Desktop-Applications-POOL-x86_64-Media1/ Desktop
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Development-Tools-POOL-x86_64-Media1/ Development
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/Update:/Products:/SES6/images/repo/SUSE-Enterprise-Storage-6-POOL-x86_64-Media1/ SES6
+
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/Update:/Products:/SES6/standard/SUSE:SLE-15:Update:Products:SES6.repo
+
+        zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA/standard/SUSE:SLE-15:GA.repo
+
+        zypper ar http://download.suse.de/ibs/home:/rjdias:/branches:/Devel:/Storage:/6.0:/Test/SLE15/home:rjdias:branches:Devel:Storage:6.0:Test.repo
+        sudo zypper mr -p 1 home_rjdias_branches_Devel_Storage_6.0_Test
+
+        zypper ar http://download.suse.de/ibs/SUSE:/Factory:/Head/standard/SUSE:Factory:Head.repo
+
         zypper --gpg-auto-import-keys ref
         hostname openattic
 
@@ -380,25 +421,35 @@ Vagrant.configure("2") do |config|
       chmod 644 bin/*.py
       chmod 755 bin/*.sh
 
-      zypper ar http://download.opensuse.org/repositories/filesystems:/ceph:/luminous/openSUSE_Leap_42.3/filesystems:ceph:luminous.repo
-      zypper ar http://download.opensuse.org/repositories/devel:languages:python/openSUSE_Leap_42.3/devel:languages:python.repo
-      zypper ar http://download.opensuse.org/repositories/home:/swiftgist/openSUSE_Leap_42.1/home:swiftgist.repo
-      zypper ar http://download.opensuse.org/repositories/home:/tserong/openSUSE_Factory/home:tserong.repo
-      zypper ar http://download.opensuse.org/repositories/home:/jfajerski/openSUSE_Leap_42.2/home:jfajerski.repo
-      zypper ar http://download.opensuse.org/repositories/filesystems:/ceph/openSUSE_Leap_42.3/filesystems:ceph.repo
+      zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Basesystem-POOL-x86_64-Media1/ Basesystem
+      zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Server-Applications-POOL-x86_64-Media1/ Server
+      zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Desktop-Applications-POOL-x86_64-Media1/ Desktop
+      zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA:/TEST/images/repo/SLE-15-Module-Development-Tools-POOL-x86_64-Media1/ Development
+      zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/Update:/Products:/SES6/images/repo/SUSE-Enterprise-Storage-6-POOL-x86_64-Media1/ SES6
+
+      zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/Update:/Products:/SES6/standard/SUSE:SLE-15:Update:Products:SES6.repo
+
+      zypper ar http://download.suse.de/ibs/SUSE:/SLE-15:/GA/standard/SUSE:SLE-15:GA.repo
+
+      zypper ar http://download.suse.de/ibs/home:/rjdias:/branches:/Devel:/Storage:/6.0:/Test/SLE15/home:rjdias:branches:Devel:Storage:6.0:Test.repo
+      sudo zypper mr -p 1 home_rjdias_branches_Devel_Storage_6.0_Test
+
+      zypper ar http://download.suse.de/ibs/SUSE:/Factory:/Head/standard/SUSE:Factory:Head.repo
+
       zypper --gpg-auto-import-keys ref
-      zypper ar https://yum.dockerproject.org/repo/main/opensuse/13.2/ docker-main
+      zypper ar http://download.suse.de/ibs/Devel:/Docker/SUSE_SLE-12-SP2_GA_standard docker-main
       zypper --no-gpg-checks ref
-      zypper -n --no-gpg-checks install docker-engine
+      zypper -n --no-gpg-checks install docker
       zypper rr docker-main
 
       systemctl enable docker
       systemctl restart docker
 
-      zypper -n install ntp salt-minion salt-master
-      systemctl enable ntpd
-      systemctl start ntpd
+      # zypper -n install ntp
+      # systemctl enable ntpd
+      # systemctl start ntpd
 
+      zypper -n install salt-minion salt-master
       systemctl enable salt-master
       systemctl start salt-master
       sleep 5
@@ -434,6 +485,7 @@ Vagrant.configure("2") do |config|
 
       cd /home/vagrant/DeepSea
       if [[ -e Makefile ]]; then
+        zypper -n install make
         make install
 
         cat > /srv/salt/ceph/updates/default_my.sls <<EOF
@@ -446,6 +498,7 @@ EOF
         cp /srv/salt/ceph/updates/default_my.sls /srv/salt/ceph/time
         sed -i 's/default/default_my/g' /srv/salt/ceph/time/init.sls
 
+        sed -i 's/#worker_threads: 5/worker_threads: 10/g' /etc/salt/master
         chown -R salt:salt /srv/pillar
         systemctl restart salt-master
         sleep 10
@@ -498,8 +551,8 @@ EOF
         DEV_ENV='true' salt-run state.orch ceph.stage.deploy
 
         sleep 5
-        echo "[DeepSea] Stage 4 - services"
-        DEV_ENV='true' salt-run state.orch ceph.stage.4
+        # echo "[DeepSea] Stage 4 - services"
+        # DEV_ENV='true' salt-run state.orch ceph.stage.4
 
         chmod 644 /etc/ceph/ceph.client.admin.keyring
 
