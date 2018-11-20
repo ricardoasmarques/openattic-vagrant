@@ -458,7 +458,9 @@ EOF
 
         sleep 10
         echo "[DeepSea] Stage 1 - discovery"
-        salt-run state.orch ceph.stage.discovery
+        mkdir -p /srv/pillar/ceph/proposals
+        chown salt:salt /srv/pillar/ceph/proposals
+        DEV_ENV='true' salt-run state.orch ceph.stage.discovery
         cat > /srv/pillar/ceph/proposals/policy.cfg <<EOF
 # Cluster assignment
 cluster-ceph/cluster/*.sls
@@ -490,7 +492,7 @@ EOF
 
         sleep 2
         echo "[DeepSea] Stage 2 - configure"
-        salt-run state.orch ceph.stage.configure
+        DEV_ENV='true' salt-run state.orch ceph.stage.configure
         sed -i 's/time_init:.*ntp/time_init: default_my/g' /srv/pillar/ceph/stack/default/global.yml
 
         sleep 5
